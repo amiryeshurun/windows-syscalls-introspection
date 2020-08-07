@@ -1,0 +1,87 @@
+;
+; system-calls-introspection.inf
+;
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=Sample ; TODO: edit Class
+ClassGuid={78A1C341-4539-11d3-B88D-00C04FAD5171} ; TODO: edit ClassGuid
+Provider=%ManufacturerName%
+CatalogFile=system-calls-introspection.cat
+DriverVer= ; TODO: set DriverVer in stampinf property pages
+PnpLockDown=1
+
+[DestinationDirs]
+DefaultDestDir = 12
+system-calls-introspection_Device_CoInstaller_CopyFiles = 11
+
+; ================= Class section =====================
+
+[ClassInstall32]
+Addreg=SampleClassReg
+
+[SampleClassReg]
+HKR,,,0,%ClassName%
+HKR,,Icon,,-5
+
+[SourceDisksNames]
+1 = %DiskName%,,,""
+
+[SourceDisksFiles]
+system-calls-introspection.sys  = 1,,
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll=1 ; make sure the number matches with SourceDisksNames
+
+;*****************************************
+; Install Section
+;*****************************************
+
+[Manufacturer]
+%ManufacturerName%=Standard,NT$ARCH$
+
+[Standard.NT$ARCH$]
+%system-calls-introspection.DeviceDesc%=system-calls-introspection_Device, Root\system-calls-introspection ; TODO: edit hw-id
+
+[system-calls-introspection_Device.NT]
+CopyFiles=Drivers_Dir
+
+[Drivers_Dir]
+system-calls-introspection.sys
+
+;-------------- Service installation
+[system-calls-introspection_Device.NT.Services]
+AddService = system-calls-introspection,%SPSVCINST_ASSOCSERVICE%, system-calls-introspection_Service_Inst
+
+; -------------- system-calls-introspection driver install sections
+[system-calls-introspection_Service_Inst]
+DisplayName    = %system-calls-introspection.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\system-calls-introspection.sys
+
+;
+;--- system-calls-introspection_Device Coinstaller installation ------
+;
+
+[system-calls-introspection_Device.NT.CoInstallers]
+AddReg=system-calls-introspection_Device_CoInstaller_AddReg
+CopyFiles=system-calls-introspection_Device_CoInstaller_CopyFiles
+
+[system-calls-introspection_Device_CoInstaller_AddReg]
+HKR,,CoInstallers32,0x00010000, "WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll,WdfCoInstaller"
+
+[system-calls-introspection_Device_CoInstaller_CopyFiles]
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll
+
+[system-calls-introspection_Device.NT.Wdf]
+KmdfService =  system-calls-introspection, system-calls-introspection_wdfsect
+[system-calls-introspection_wdfsect]
+KmdfLibraryVersion = $KMDFVERSION$
+
+[Strings]
+SPSVCINST_ASSOCSERVICE= 0x00000002
+ManufacturerName="<Your manufacturer name>" ;TODO: Replace with your manufacturer name
+ClassName="Samples" ; TODO: edit ClassName
+DiskName = "system-calls-introspection Installation Disk"
+system-calls-introspection.DeviceDesc = "system-calls-introspection Device"
+system-calls-introspection.SVCDESC = "system-calls-introspection Service"
