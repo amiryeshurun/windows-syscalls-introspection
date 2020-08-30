@@ -15,9 +15,7 @@ BOOLEAN IsWriteProtected()
 		mov eax, cr0
 		mov cr0_value, eax
 	}
-	if (cr0_value & WP_BIT)
-		return TRUE;
-	return FALSE;
+	return cr0_value & WP_BIT;
 }
 
 NTSTATUS MyNtOpenProcess(PHANDLE ProcessHandle, ACCESS_MASK DesiredAccess, 
