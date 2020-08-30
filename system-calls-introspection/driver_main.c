@@ -34,7 +34,7 @@ VOID OverrideNtOpenProcessHandler()
 	PTR KTHREAD = GetCurrentKTHREAD(), SSDT, NtOpenProcessAddress;
 	/* Locate the SSDT Address in the current KTHREAD structure */
 	memcpy(&SSDT, KTHREAD + SERVICE_TABLE_OFFSET, sizeof(PTR)); 
-	/* The NT system call list (those in ntoskrnl.dll) are listed in the
+	/* The NT system call list (those in ntoskrnl.exe) are listed in the
 		first table. The second table contains addresses of functions insde win32k.sys */
 	memcpy(&SystemTable, SSDT, sizeof(PTR));
 	/* Each value in the table is 4 bytes long */
